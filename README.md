@@ -15,7 +15,7 @@
 
 2. 添加启动注解到配置类
 
- `@EnableGuidGenerator`
+	 `@EnableGuidGenerator`
 
 3. 注入使用
 
@@ -60,10 +60,10 @@ guid:
   zookeeper:
     # zookeeper连接地址
     connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
-	# zookeeper会话超时时间，默认3000
+    # zookeeper会话超时时间，默认3000
     sessionTimeOut: 3000
-	# 历史节点清理任务线程池大小，为0则不清理，默认1
+    # 历史节点清理任务线程池大小，为0则不清理，默认1
     cleanExecutorSize: 2
-	# 每隔多少个id触发一次清理，默认100
+    # 每隔多少个id触发一次清理，默认100
     cleanUnit: 100
 ```

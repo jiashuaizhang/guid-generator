@@ -8,8 +8,8 @@
 ```
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
-    		<artifactId>guid-generator</artifactId>
-    		<version>1.0.0</version>
+    		    <artifactId>guid-generator</artifactId>
+    		    <version>1.0.0</version>
 		</dependency>
 ```
 
@@ -18,6 +18,7 @@
  `@EnableGuidGenerator`
 
 3. 注入使用
+
 ```
 	@Autowired
 	private GuidGenerator guidGenerator;
@@ -33,6 +34,7 @@
 
 ### 配置:
 1. snowflake
+
 添加如下配置，或不做任何配置
 ```
 guid:
@@ -41,6 +43,7 @@ guid:
 特别说明:snowflake方式下，若部署多个节点，需外部分别指定machineId和datacenterId，调用`long generate(long datacenterId, long machineId);`,避免可能的ID重复。
 
 2. redis
+
 添加如下配置
 ```
 guid:
@@ -49,6 +52,7 @@ guid:
 此方式依赖bean: org.springframework.data.redis.core.RedisTemplate,需引入`spring-boot-starter-data-redis`,配置redis连接。
 
 3. zookeeper
+
 添加如下配置
 ```
 guid:

@@ -2,7 +2,7 @@
 一个基于springboot设计的分布式ID生成器，提供snowflake、redis、zookeeper等实现方式
 
 ### 快速开始
-*1. 添加依赖到maven*
+**1. 添加依赖到maven**
 
 - 项目没有发布到中央仓库，需手动编译
 ```
@@ -13,11 +13,11 @@
 		</dependency>
 ```
 
-*2. 添加启动注解到配置类*
+**2. 添加启动注解到配置类**
 
 	 `@EnableGuidGenerator`
 
-*3. 注入使用*
+**3. 注入使用**
 
 ```
 	@Autowired
@@ -33,7 +33,7 @@
 ```
 
 ### 配置:
-*1. snowflake*
+**1. snowflake**
 
 添加如下配置，或不做任何配置
 ```
@@ -42,7 +42,7 @@ guid:
 ```
 特别说明:snowflake方式下，若部署多个节点，需外部分别指定machineId和datacenterId，调用`long generate(long datacenterId, long machineId);`,避免可能的ID重复。
 
-*2. redis*
+**2. redis**
 
 添加如下配置
 ```
@@ -51,7 +51,7 @@ guid:
 ```
 此方式依赖bean: org.springframework.data.redis.core.RedisTemplate,需引入`spring-boot-starter-data-redis`,配置redis连接。
 
-*3. zookeeper*
+**3. zookeeper**
 
 添加如下配置
 ```

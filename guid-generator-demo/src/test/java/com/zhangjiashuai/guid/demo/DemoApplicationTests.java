@@ -1,11 +1,14 @@
 package com.zhangjiashuai.guid.demo;
 
+import java.util.concurrent.TimeUnit;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.zhangjiashuai.guid.config.SnowFlakeZookeeperWorkerId;
 import com.zhangjiashuai.guid.generator.GuidGenerator;
 
 @RunWith(SpringRunner.class)
@@ -14,11 +17,13 @@ public class DemoApplicationTests {
 	
 	@Autowired
 	private GuidGenerator guidGenerator;
+	@Autowired(required = false)
+	private SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId;
 
 	@Test
 	public void testGuidGenerate() {
 		for (int i = 0; i < 100; i++) {
-			long id = guidGenerator.generate("table_0");
+			long id = guidGenerator.generate();
 			System.out.println("id : " + id);
 		}
 //		while (true) {
@@ -29,6 +34,11 @@ public class DemoApplicationTests {
 //				e.printStackTrace();
 //			}
 //		}
+	}
+	
+	@Test
+	public void testConfig() {
+		System.out.println(snowFlakeZookeeperMachineId);
 	}
 
 }

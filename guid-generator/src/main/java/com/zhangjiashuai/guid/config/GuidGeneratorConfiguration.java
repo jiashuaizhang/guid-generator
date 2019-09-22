@@ -8,6 +8,7 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -27,7 +28,7 @@ public class GuidGeneratorConfiguration {
 	
 	@Bean
 	@ConfigurationProperties(prefix = "guid.zookeeper")
-	@ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "zookeeper")
+	@ConditionalOnProperty(prefix = "guid.zookeeper", name = "connectString")
 	public ZooKeeperConfig zooKeeperConfig() {
 		return new ZooKeeperConfig();
 	}
@@ -47,7 +48,7 @@ public class GuidGeneratorConfiguration {
 	
 	@Bean
 	@ConditionalOnMissingBean
-	@ConditionalOnBean(ZooKeeperConfig.class)
+	@ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "zookeeper")
 	public ZooKeeperGuidGenerator zooKeeperGuidGenerator(@Autowired CuratorFramework curator, @Autowired ZooKeeperConfig zooKeeperConfig) {
 		ExecutorService cleanExecutor = null;
 		if(zooKeeperConfig.getCleanExecutorSize() > 0) {
@@ -78,10 +79,19 @@ public class GuidGeneratorConfiguration {
     	return new RedisGuidGenerator(redisTemplate);
     }
     
+	@Bean(initMethod = "init")
+	@ConfigurationProperties(prefix = "guid.snowflake.zookeeper-worker-id")
+	@ConditionalOnBean(ZooKeeperConfig.class)
+    @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
+    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator, @Value("${spring.application.name}-worker-id") String defaultNode) {
+    	return new SnowFlakeZookeeperWorkerId(curator, defaultNode);
+    }
+    
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeGenerator snowFlakeGenerator() {
-    	return new SnowFlakeGenerator();
+    public SnowFlakeGenerator snowFlakeGenerator(@Autowired(required = false) SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId) {
+    	return new SnowFlakeGenerator(snowFlakeZookeeperMachineId);
     }
+    
 }

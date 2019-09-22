@@ -30,7 +30,7 @@ public interface GuidGenerator {
 	String generateWithTablePrefix(String table);
 	
 	/**
-	 *  使用snowFlake生成ID
+	 * 使用snowFlake生成ID
 	 * @param datacenterId 数据中心id
 	 * @param machineId 机器id
 	 * @return

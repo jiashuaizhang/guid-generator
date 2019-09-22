@@ -37,16 +37,16 @@ public class ZooKeeperGuidGenerator implements GuidGenerator{
 	
 	private static String root;
 	private static String nodePrefix ;
-	private static String defaultNodePath;
+	private static String tableNodeTemplate;
 	static {
 		root = "/" + Const.ROOT;
 		nodePrefix = root + "/";
-		defaultNodePath = nodePrefix + Const.DEFAULT_TABLE;
+		tableNodeTemplate = nodePrefix + "%s/%s";
 	}
 	
 	@Override
 	public long generate() {
-		return generate(defaultNodePath);
+		return generate(Const.DEFAULT_TABLE);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class ZooKeeperGuidGenerator implements GuidGenerator{
 	@Override
 	public String generateWithTablePrefix(String table) {
 		Objects.requireNonNull(table);
-		String nodePath = nodePrefix + table;
+		String nodePath = formatNodePath(table);
 		try {
 			String idWithPrefix = curator.create().creatingParentsIfNeeded().withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(nodePath);
 			cleanIdNodes(idWithPrefix, table);
@@ -69,6 +69,9 @@ public class ZooKeeperGuidGenerator implements GuidGenerator{
 		}
 	}
 	
+	private String formatNodePath(String table) {
+		return String.format(tableNodeTemplate, table, table);
+	}
 	/**
 	 * 从带前缀的id字符串截取数字id
 	 * @param idWithPrefix
@@ -76,31 +79,33 @@ public class ZooKeeperGuidGenerator implements GuidGenerator{
 	 * @return
 	 */
 	private long extractId(String idWithPrefix, String table) {
-		int beginIndex = nodePrefix.length() + table.length();
+		int beginIndex = formatNodePath(table).length();
 		String idStr = idWithPrefix.substring(beginIndex);
 		return Long.parseLong(idStr);
 	}
 	
 	/**
-	 *    清理id节点，已生成的id不需要保存在zookeeper中
+	 * 清理id节点，已生成的id不需要保存在zookeeper中
 	 * @param idWithPrefix
 	 * @param table
 	 */
 	private void cleanIdNodes(String idWithPrefix, String table) {
-		if(cleanExecutor != null) {
-			cleanExecutor.submit(() -> {
-				try {
-					long id = extractId(idWithPrefix, table);
-					if((id + 1) % cleanUnit == 0) {
-						List<String> childen = curator.getChildren().forPath(root);
-						for (String path : childen) {
-							curator.delete().quietly().forPath(nodePrefix + path);
-						}
-					}
-				} catch (Exception e) {
-					log.error("error while clean id nodes", e);
-				}
-			});
+		if(cleanExecutor == null) {
+			return;
 		}
+		cleanExecutor.submit(() -> {
+			try {
+				long id = extractId(idWithPrefix, table);
+				if((id + 1) % cleanUnit == 0) {
+					String parentPath = nodePrefix + table;
+					List<String> childen = curator.getChildren().forPath(parentPath);
+					for (String path : childen) {
+						curator.delete().quietly().forPath(parentPath + path);
+					}
+				}
+			} catch (Exception e) {
+				log.error("error while clean id nodes", e);
+			}
+		});
 	}
 }

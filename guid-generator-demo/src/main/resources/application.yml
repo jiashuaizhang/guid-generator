@@ -5,7 +5,13 @@ guid:
     sessionTimeOut: 3000
     cleanExecutorSize: 2
     cleanUnit: 100
+  snowflake:
+    zookeeper-worker-id:
+      enabled: true
+      node: ${spring.application.name}-worker-id
 spring:
+  application:
+    name: guid-generator-demo
   redis:
     password: redis123456
     sentinel:

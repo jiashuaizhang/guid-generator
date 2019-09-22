@@ -1,10 +1,18 @@
 package com.zhangjiashuai.guid.consts;
 
+import java.util.Random;
+
+import com.zhangjiashuai.guid.util.SnowFlake;
+
 public class Const {
 	
-	public static String ROOT = "guid";
-	public static String DEFAULT_TABLE = "default";
+	public static final String ROOT = "guid";
+	public static final String DEFAULT_TABLE = "_default_";
 	
-	public static long DEFAULT_DATACENTER_ID = 5;
-	public static long DEFAULT_MACHINEID = 6;
+	private static Random machineIdRandom = new Random();
+	private static Random dataCenterIdRandom = new Random(); 
+	
+	public static final long DEFAULT_DATACENTER_ID = machineIdRandom.nextInt((int) SnowFlake.MAX_DATACENTER_NUM);
+	public static final long DEFAULT_MACHINEID = dataCenterIdRandom.nextInt((int) SnowFlake.MAX_MACHINE_NUM);;
+	
 }

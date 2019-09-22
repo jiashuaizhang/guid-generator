@@ -56,9 +56,9 @@ guid:
     sessionTimeOut: 3000
   snowflake:
     zookeeper-worker-id:
-	  # 是否开启zookeeper worker获取，默认false
+      # 是否开启zookeeper worker获取，默认false
       enabled: true
-	  # /guid根节点下存储workId的父节点,默认 _workerId_
+      # /guid根节点下存储workId的父节点,默认 _workerId_
       node: _workerId_
 ```
 **2. redis**

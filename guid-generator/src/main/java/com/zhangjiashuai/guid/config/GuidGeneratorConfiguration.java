@@ -26,6 +26,7 @@ import com.zhangjiashuai.guid.generator.ZooKeeperGuidGenerator;
 public class GuidGeneratorConfiguration {
 	
 	@Bean
+        @ConditionalOnMissingBean
 	@ConfigurationProperties(prefix = "guid.zookeeper")
 	@ConditionalOnProperty(prefix = "guid.zookeeper", name = "connectString")
 	public ZooKeeperConfig zooKeeperConfig() {

@@ -86,7 +86,7 @@ public class SnowFlakeZookeeperWorkerId {
 			int beginIndex = nodePath.length();
 			String idStr = idWithPrefix.substring(beginIndex);
 			long id = Long.parseLong(idStr);
-			long workerId = Math.abs(id) % maxNum;
+			long workerId = id % maxNum;
 			log.info("got {}:[{}] by zookeeper", type, workerId);
 			return workerId;
 		}  catch (Exception e) {

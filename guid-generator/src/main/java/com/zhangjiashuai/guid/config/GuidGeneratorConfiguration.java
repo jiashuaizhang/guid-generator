@@ -8,7 +8,6 @@ import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -83,8 +82,8 @@ public class GuidGeneratorConfiguration {
 	@ConfigurationProperties(prefix = "guid.snowflake.zookeeper-worker-id")
 	@ConditionalOnBean(ZooKeeperConfig.class)
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator, @Value("${spring.application.name}-worker-id") String defaultNode) {
-    	return new SnowFlakeZookeeperWorkerId(curator, defaultNode);
+    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator) {
+    	return new SnowFlakeZookeeperWorkerId(curator);
     }
     
     @Bean

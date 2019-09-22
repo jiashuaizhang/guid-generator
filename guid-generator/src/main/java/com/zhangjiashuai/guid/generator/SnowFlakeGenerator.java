@@ -15,17 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SnowFlakeGenerator implements GuidGenerator {
 	
-	private SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId;
+	private SnowFlakeZookeeperWorkerId snowFlakeZookeeperWorkerId;
 	
 	public SnowFlakeGenerator() {
 		
 	}
 	
-	public SnowFlakeGenerator(SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId) {
-		this.snowFlakeZookeeperMachineId = snowFlakeZookeeperMachineId;
+	public SnowFlakeGenerator(SnowFlakeZookeeperWorkerId snowFlakeZookeeperWorkerId) {
+		this.snowFlakeZookeeperWorkerId = snowFlakeZookeeperWorkerId;
 		String msg = "using default machineId:[{}], dataCenterId:[{}]";
-		if(snowFlakeZookeeperMachineId != null) {
-			log.info(msg, snowFlakeZookeeperMachineId.getMachineId(), snowFlakeZookeeperMachineId.getDataCenterId());
+		if(snowFlakeZookeeperWorkerId != null) {
+			log.info(msg, snowFlakeZookeeperWorkerId.getMachineId(), snowFlakeZookeeperWorkerId.getDataCenterId());
 		} else {
 			log.info(msg, Const.DEFAULT_MACHINEID, Const.DEFAULT_DATACENTER_ID);
 		}
@@ -51,16 +51,16 @@ public class SnowFlakeGenerator implements GuidGenerator {
 	
 	private long getDefaultMachineId() {
 		long machineId  = Const.DEFAULT_MACHINEID;
-		if(snowFlakeZookeeperMachineId != null && snowFlakeZookeeperMachineId.isEnabled()) {
-			machineId = snowFlakeZookeeperMachineId.getMachineId();
+		if(snowFlakeZookeeperWorkerId != null && snowFlakeZookeeperWorkerId.isEnabled()) {
+			machineId = snowFlakeZookeeperWorkerId.getMachineId();
 		}
 		return machineId;
 	}
 	
 	private long getDefaultDataCenterId() {
 		long dataCenterId  = Const.DEFAULT_DATACENTER_ID;
-		if(snowFlakeZookeeperMachineId != null && snowFlakeZookeeperMachineId.isEnabled()) {
-			dataCenterId = snowFlakeZookeeperMachineId.getDataCenterId();
+		if(snowFlakeZookeeperWorkerId != null && snowFlakeZookeeperWorkerId.isEnabled()) {
+			dataCenterId = snowFlakeZookeeperWorkerId.getDataCenterId();
 		}
 		return dataCenterId;
 	}

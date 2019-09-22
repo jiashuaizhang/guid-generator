@@ -45,7 +45,7 @@ guid:
 默认machineId和datacenterId在应用启动时随机生成。
 
 ##### 1.1.0版本更新:支持通过zookeeper获取datacenterId和machineId,保证不重复
-完成配置如下:
+完整配置如下:
 ```
 guid:
   impl: snowflake

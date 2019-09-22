@@ -90,7 +90,7 @@ public class SnowFlakeZookeeperWorkerId {
 			log.info("got {}:[{}] by zookeeper", type, workerId);
 			return workerId;
 		}  catch (Exception e) {
-			log.error("calculate {} error", node, e);
+			log.error("calculate {} error", type, e);
 			return defaultValue;
 		}
 	}

@@ -11,7 +11,7 @@ public class ZooKeeperConfig {
 	/**
 	 * zookeeper会话超时时间
 	 */
-	private int sessionTimeOut = 3000;
+	private int sessionTimeOut = 60000;
 	/**
 	 * 清理id任务线程池大小，为0则不清理
 	 */

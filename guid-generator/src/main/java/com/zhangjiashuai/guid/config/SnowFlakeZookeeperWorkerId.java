@@ -67,9 +67,9 @@ public class SnowFlakeZookeeperWorkerId {
 			Stat stat = curator.checkExists().creatingParentsIfNeeded().forPath(nodePath);
 			if(stat == null) {
 				curator.create().storingStatIn(stat).withMode(CreateMode.EPHEMERAL).forPath(nodePath, defaultNode.getBytes(StandardCharsets.UTF_8));
+	                        log.info("machineId:[{}] and dataCenterId:[{}] is valid,lets use them", machineId, dataCenterId);
+			        return true;
 			}
-			log.info("machineId:[{}] and dataCenterId:[{}] is valid,lets use them", machineId, dataCenterId);
-			return true;
 		} catch (NodeExistsException e) {
 			log.info("machineId:[{}] and dataCenterId:[{}] is in use", machineId, dataCenterId);
 		} catch (Exception e) {

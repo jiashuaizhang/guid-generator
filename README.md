@@ -43,7 +43,8 @@ guid:
 ```
 特别说明:snowflake方式下，若部署多个节点，需外部分别指定machineId和datacenterId，调用`long generate(long datacenterId, long machineId);`,避免可能的ID重复。
 默认machineId和datacenterId在应用启动时随机生成。
-#####1.1.0版本更新:支持通过zookeeper获取datacenterId和machineId,保证不重复
+
+##### 1.1.0版本更新:支持通过zookeeper获取datacenterId和machineId,保证不重复
 完成配置如下:
 ```
 guid:

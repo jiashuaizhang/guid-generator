@@ -41,7 +41,7 @@ public class ZooKeeperGuidGenerator implements GuidGenerator{
 	static {
 		root = "/" + Const.ROOT;
 		nodePrefix = root + "/";
-		tableNodeTemplate = nodePrefix + "%s/%s";
+		tableNodeTemplate = nodePrefix + "%s/%s-";
 	}
 	
 	@Override

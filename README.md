@@ -9,14 +9,12 @@
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
     		    <artifactId>guid-generator</artifactId>
-    		    <version>1.0.0</version>
     		    <version>1.1.0</version>
 		</dependency>
 ```
 
 **2. 添加启动注解到配置类**
 
-	 `@EnableGuidGenerator`
 	 @EnableGuidGenerator
 
 **3. 注入使用**

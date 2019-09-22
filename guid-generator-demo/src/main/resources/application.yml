@@ -8,7 +8,7 @@ guid:
   snowflake:
     zookeeper-worker-id:
       enabled: true
-      node: ${spring.application.name}-worker-id
+      node: _workerId_
 spring:
   application:
     name: guid-generator-demo

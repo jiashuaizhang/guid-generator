@@ -83,8 +83,8 @@ public class GuidGeneratorConfiguration {
 	@ConfigurationProperties(prefix = "guid.snowflake.zookeeper-worker-id")
 	@ConditionalOnBean(ZooKeeperConfig.class)
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator, @Value("${spring.application.name}-worker-id") String defaultNode) {
-    	return new SnowFlakeZookeeperWorkerId(curator, defaultNode);
+    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator) {
+    	return new SnowFlakeZookeeperWorkerId(curator);
     }
     
     @Bean

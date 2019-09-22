@@ -20,7 +20,7 @@ public class SnowFlakeZookeeperWorkerId {
 	
 	private boolean enabled;
 	private String node;
-	private String defaultNode;
+	private final String defaultNode = "_workerId_";
 	private CuratorFramework curator;
 	private long machineId = Const.DEFAULT_MACHINEID;
 	private long dataCenterId = Const.DEFAULT_DATACENTER_ID;
@@ -29,9 +29,8 @@ public class SnowFlakeZookeeperWorkerId {
 		
 	}
 	
-	public SnowFlakeZookeeperWorkerId(CuratorFramework curator, String defaultNode) {
+	public SnowFlakeZookeeperWorkerId(CuratorFramework curator) {
 		this.curator = curator;
-		this.defaultNode = defaultNode;
 	}
 	
 	public void init() {

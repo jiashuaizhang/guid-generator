@@ -26,7 +26,6 @@
 	@Test
 	public void testGuidGenerate() {
 		for (int i = 0; i < 100; i++) {
-			long id = guidGenerator.generate("table_0");
 			long id = guidGenerator.generate();
 			//long id = guidGenerator.generate("tableName");
 			System.out.printf("guid: [%d]", id);

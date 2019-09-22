@@ -53,7 +53,7 @@ guid:
   zookeeper:
     # zookeeper连接地址
     connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
-    # zookeeper会话超时时间，默认3000
+    # zookeeper会话超时时间，默认60000
     sessionTimeOut: 3000
   snowflake:
     zookeeper-worker-id:
@@ -80,7 +80,7 @@ guid:
   zookeeper:
     # zookeeper连接地址
     connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
-    # zookeeper会话超时时间，默认3000
+    # zookeeper会话超时时间，默认60000
     sessionTimeOut: 3000
     # 历史节点清理任务线程池大小，为0则不清理，默认1
     cleanExecutorSize: 2

@@ -6,9 +6,10 @@ guid:
     cleanExecutorSize: 2
     cleanUnit: 100
   snowflake:
-    zookeeper-worker-id:
-      enabled: true
+      zookeeperEnabled: false
       node: _workerId_
+      machineId: 1
+      datacenterId: 31
 spring:
   application:
     name: guid-generator-demo

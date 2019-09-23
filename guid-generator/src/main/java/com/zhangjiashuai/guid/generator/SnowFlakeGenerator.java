@@ -2,7 +2,7 @@ package com.zhangjiashuai.guid.generator;
 
 import java.util.Objects;
 
-import com.zhangjiashuai.guid.config.SnowFlakeZookeeperWorkerId;
+import com.zhangjiashuai.guid.config.SnowFlakeWorkerId;
 import com.zhangjiashuai.guid.consts.Const;
 import com.zhangjiashuai.guid.util.SnowFlake;
 
@@ -15,17 +15,17 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SnowFlakeGenerator implements GuidGenerator {
 	
-	private SnowFlakeZookeeperWorkerId snowFlakeZookeeperWorkerId;
+	private SnowFlakeWorkerId snowFlakeWorkerId;
 	
 	public SnowFlakeGenerator() {
 		
 	}
 	
-	public SnowFlakeGenerator(SnowFlakeZookeeperWorkerId snowFlakeZookeeperWorkerId) {
-		this.snowFlakeZookeeperWorkerId = snowFlakeZookeeperWorkerId;
-		String msg = "using default machineId:[{}], dataCenterId:[{}]";
+	public SnowFlakeGenerator(SnowFlakeWorkerId snowFlakeZookeeperWorkerId) {
+		this.snowFlakeWorkerId = snowFlakeZookeeperWorkerId;
+		String msg = "using default machineId:[{}], datacenterId:[{}]";
 		if(snowFlakeZookeeperWorkerId != null) {
-			log.info(msg, snowFlakeZookeeperWorkerId.getMachineId(), snowFlakeZookeeperWorkerId.getDataCenterId());
+			log.info(msg, snowFlakeZookeeperWorkerId.getMachineId(), snowFlakeZookeeperWorkerId.getDatacenterId());
 		} else {
 			log.info(msg, Const.DEFAULT_MACHINEID, Const.DEFAULT_DATACENTER_ID);
 		}
@@ -51,16 +51,16 @@ public class SnowFlakeGenerator implements GuidGenerator {
 	
 	private long getDefaultMachineId() {
 		long machineId  = Const.DEFAULT_MACHINEID;
-		if(snowFlakeZookeeperWorkerId != null && snowFlakeZookeeperWorkerId.isEnabled()) {
-			machineId = snowFlakeZookeeperWorkerId.getMachineId();
+		if(snowFlakeWorkerId != null) {
+			machineId = snowFlakeWorkerId.getMachineId();
 		}
 		return machineId;
 	}
 	
 	private long getDefaultDataCenterId() {
 		long dataCenterId  = Const.DEFAULT_DATACENTER_ID;
-		if(snowFlakeZookeeperWorkerId != null && snowFlakeZookeeperWorkerId.isEnabled()) {
-			dataCenterId = snowFlakeZookeeperWorkerId.getDataCenterId();
+		if(snowFlakeWorkerId != null) {
+			dataCenterId = snowFlakeWorkerId.getDatacenterId();
 		}
 		return dataCenterId;
 	}

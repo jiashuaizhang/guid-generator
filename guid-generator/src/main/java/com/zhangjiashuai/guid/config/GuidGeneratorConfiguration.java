@@ -26,7 +26,7 @@ import com.zhangjiashuai.guid.generator.ZooKeeperGuidGenerator;
 public class GuidGeneratorConfiguration {
 	
 	@Bean
-        @ConditionalOnMissingBean
+    @ConditionalOnMissingBean
 	@ConfigurationProperties(prefix = "guid.zookeeper")
 	@ConditionalOnProperty(prefix = "guid.zookeeper", name = "connectString")
 	public ZooKeeperConfig zooKeeperConfig() {
@@ -80,17 +80,16 @@ public class GuidGeneratorConfiguration {
     }
     
 	@Bean(initMethod = "init")
-	@ConfigurationProperties(prefix = "guid.snowflake.zookeeper-worker-id")
-	@ConditionalOnBean(ZooKeeperConfig.class)
+	@ConfigurationProperties(prefix = "guid.snowflake")
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator) {
-    	return new SnowFlakeZookeeperWorkerId(curator);
+    public SnowFlakeWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator) {
+    	return new SnowFlakeWorkerId(curator);
     }
     
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeGenerator snowFlakeGenerator(@Autowired(required = false) SnowFlakeZookeeperWorkerId snowFlakeZookeeperMachineId) {
+    public SnowFlakeGenerator snowFlakeGenerator(@Autowired(required = false) SnowFlakeWorkerId snowFlakeZookeeperMachineId) {
     	return new SnowFlakeGenerator(snowFlakeZookeeperMachineId);
     }
     

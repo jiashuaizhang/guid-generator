@@ -8,16 +8,12 @@
 ```
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
-    		    <artifactId>guid-generator</artifactId>
-    		    <version>1.1.0</version>
+    		<artifactId>guid-generator-spring-boot-starter</artifactId>
+    		<version>1.1.0</version>
 		</dependency>
 ```
 
-**2. 添加启动注解到配置类**
-
-	 @EnableGuidGenerator
-
-**3. 注入使用**
+**2. 注入使用**
 
 ```
 	@Autowired
@@ -41,11 +37,14 @@
 guid:
   impl: snowflake
 ```
-特别说明:snowflake方式下，若部署多个节点，需外部分别指定machineId和datacenterId，调用`long generate(long datacenterId, long machineId);`,避免可能的ID重复。
+特别说明:snowflake方式下，若部署多个节点，只能保证单个节点生成的ID是有序的。而整个集群生成的ID无法保证有序，如果对有序性有执着要求，请使用zookeeper或redis方式。
 
-默认machineId和datacenterId在应用启动时随机生成。
+##### 1.1.0版本更新:
+1)支持通过zookeeper获取datacenterId和machineId,保证不重复
+2)支持配置默认machineId和datacenterId，避免每次重启后machineId和datacenterId重新生成导致ID顺序混乱
 
-##### 1.1.0版本更新:支持通过zookeeper获取datacenterId和machineId,保证不重复
+- 注:当使用无参方法`guidGenerator.generate()`时，使用默认machineId和datacenterId;当使用`guidGenerator.generate("tableName")`时，使用默认machineId，datacenterId根据入参的哈希值计算.
+
 完整配置如下:
 ```
 guid:
@@ -56,11 +55,14 @@ guid:
     # zookeeper会话超时时间，默认60000
     sessionTimeOut: 3000
   snowflake:
-    zookeeper-worker-id:
       # 是否开启zookeeper worker获取，默认false
-      enabled: true
-      # /guid根节点下存储workId的父节点,默认 _workerId_
+      zookeeperEnabled: true
+      # /guid根节点下存储workId的父节点,默认 _workerId_. 当zookeeperEnabled为true时生效
       node: _workerId_
+	  # 默认machineId，范围0~31.当zookeeperEnabled为false时生效
+	  machineId: 1
+	  # 默认datacenterId，范围0~31.当zookeeperEnabled为false时生效
+	  datacenterId: 31
 ```
 **2. redis**
 

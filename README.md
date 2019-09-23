@@ -62,10 +62,10 @@ guid:
       zookeeperEnabled: true
       # /guid根节点下存储workId的父节点,默认 _workerId_. 当zookeeperEnabled为true时生效
       node: _workerId_
-	  # 默认machineId，范围0~31.当zookeeperEnabled为false时生效
-	  machineId: 1
-	  # 默认datacenterId，范围0~31.当zookeeperEnabled为false时生效
-	  datacenterId: 31
+      # 默认machineId，范围0~31.当zookeeperEnabled为false时生效
+      machineId: 1
+      # 默认datacenterId，范围0~31.当zookeeperEnabled为false时生效
+      datacenterId: 31
 ```
 **2. redis**
 

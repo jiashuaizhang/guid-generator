@@ -8,8 +8,8 @@
 ```
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
-    		<artifactId>guid-generator-spring-boot-starter</artifactId>
-    		<version>1.1.0</version>
+    		    <artifactId>guid-generator-spring-boot-starter</artifactId>
+    		    <version>1.1.0</version>
 		</dependency>
 ```
 
@@ -40,10 +40,13 @@ guid:
 特别说明:snowflake方式下，若部署多个节点，只能保证单个节点生成的ID是有序的。而整个集群生成的ID无法保证有序，如果对有序性有执着要求，请使用zookeeper或redis方式。
 
 ##### 1.1.0版本更新:
-1)支持通过zookeeper获取datacenterId和machineId,保证不重复
+1)支持通过zookeeper获取默认machineId和datacenterId,保证不重复
+
 2)支持配置默认machineId和datacenterId，避免每次重启后machineId和datacenterId重新生成导致ID顺序混乱
 
-- 注:当使用无参方法`guidGenerator.generate()`时，使用默认machineId和datacenterId;当使用`guidGenerator.generate("tableName")`时，使用默认machineId，datacenterId根据入参的哈希值计算.
+3)如果什么也不配置，默认machineId和datacenterId将会在应用启动时随机生成，所以启动多个节点会有小概率的重复问题
+
+- 注:当使用无参方法`guidGenerator.generate()`时，使用默认machineId和datacenterId;当使用`guidGenerator.generate("tableName")`时，使用默认machineId，datacenterId根据入参的哈希值计算.所以当部署节点数超过32，即machineId有重复时，`guidGenerator.generate("tableName")`方法将不可靠。
 
 完整配置如下:
 ```

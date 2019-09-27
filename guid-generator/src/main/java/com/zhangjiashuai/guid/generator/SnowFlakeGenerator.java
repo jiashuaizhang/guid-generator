@@ -42,12 +42,6 @@ public class SnowFlakeGenerator implements GuidGenerator {
 		long datacenterId = Math.abs(table.hashCode()) % SnowFlake.MAX_DATACENTER_NUM;
 		return generate(datacenterId, getDefaultMachineId());
 	}
-
-	@Override
-	public String generateWithTablePrefix(String table) {
-		long id = generate(table);
-		return table + "-" + id;
-	}
 	
 	private long getDefaultMachineId() {
 		long machineId  = Const.DEFAULT_MACHINEID;

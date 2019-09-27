@@ -23,11 +23,14 @@ public interface GuidGenerator {
 	long generate(String table);
 	
 	/**
-	 *   生成ID,按照表名分组单独计数，并拼接 "table + '-'"作为前缀
+	 * 生成ID,按照表名分组单独计数，并拼接 "table + '-'"作为前缀
 	 * @param table
 	 * @return
 	 */
-	String generateWithTablePrefix(String table);
+	default String generateWithTablePrefix(String table) {
+		long id = generate(table);
+		return table + "-" + id;
+	}
 	
 	/**
 	 * 使用snowFlake生成ID

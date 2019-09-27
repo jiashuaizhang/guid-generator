@@ -47,10 +47,4 @@ public class RedisGuidGenerator implements GuidGenerator {
 		return value;
 	}
 
-	@Override
-	public String generateWithTablePrefix(String table) {
-		Long id = generate(table);
-		return table + "-" + id;
-	}
-
 }

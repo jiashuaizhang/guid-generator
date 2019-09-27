@@ -1,8 +1,5 @@
 package com.zhangjiashuai.guid.config;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -49,12 +46,8 @@ public class GuidGeneratorConfiguration {
 	@Bean
 	@ConditionalOnMissingBean
 	@ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "zookeeper")
-	public ZooKeeperGuidGenerator zooKeeperGuidGenerator(@Autowired CuratorFramework curator, @Autowired ZooKeeperConfig zooKeeperConfig) {
-		ExecutorService cleanExecutor = null;
-		if(zooKeeperConfig.getCleanExecutorSize() > 0) {
-			cleanExecutor = Executors.newFixedThreadPool(zooKeeperConfig.getCleanExecutorSize());
-		}
-		return new ZooKeeperGuidGenerator(curator, cleanExecutor, zooKeeperConfig.getCleanUnit());
+	public ZooKeeperGuidGenerator zooKeeperGuidGenerator(@Autowired CuratorFramework curator) {
+		return new ZooKeeperGuidGenerator(curator);
 	}
 	
 	

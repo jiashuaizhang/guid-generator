@@ -1,10 +1,8 @@
 guid:
-  impl: snowflake # || zookeeper || redis
+  impl: zookeeper # snowflake || zookeeper || redis
   zookeeper:
     connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
     sessionTimeOut: 3000
-    cleanExecutorSize: 2
-    cleanUnit: 100
   snowflake:
       zookeeperEnabled: false
       node: _workerId_

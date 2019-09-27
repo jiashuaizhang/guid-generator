@@ -8,8 +8,9 @@
 ```
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
-    		<version>1.1.1</version>
+    		    <version>1.1.1</version>
 		</dependency>
+```
 
 **2. 注入使用**
 

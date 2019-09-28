@@ -8,6 +8,7 @@
 ```
 		<dependency>
 		    <groupId>com.zhangjiashuai</groupId>
+    		    <artifactId>guid-generator-spring-boot-starter</artifactId>
     		    <version>1.1.1</version>
 		</dependency>
 ```

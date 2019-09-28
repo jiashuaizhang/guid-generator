@@ -37,7 +37,7 @@
 guid:
   impl: snowflake
 ```
-特别说明:snowflake方式下，若部署多个节点，只能保证单个节点生成的ID是有序的。而整个集群生成的ID无法保证有序，如果对有序性有执着要求，请使用zookeeper或redis方式。
+特别说明:snowflake方式下，若部署多个节点，只能保证单个节点生成的ID是有序的,而整个集群生成的ID无法保证有序。如果对有序性有执着要求，请以主从方式部署，或使用zookeeper或redis方式。
 
 ##### 1.1.0版本更新:
 1)支持通过zookeeper获取默认machineId和datacenterId,保证不重复

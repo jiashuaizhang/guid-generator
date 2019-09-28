@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 import com.zhangjiashuai.guid.client.leader.LeaderAddress;
-import com.zhangjiashuai.guid.config.SnowFlakeConfig;
 import com.zhangjiashuai.guid.generator.GuidGenerator;
 
 @RunWith(SpringRunner.class)
@@ -19,17 +18,18 @@ public class DemoApplicationTests {
 	
 	@Autowired
 	private GuidGenerator guidGenerator;
-	@Autowired(required = false)
-	private SnowFlakeConfig snowFlakeZookeeperMachineId;
+
 	@Autowired
 	private RestTemplate restTemplate;
 
 	@Test
 	public void testGuidGenerate() {
-		for (int i = 0; i < 100; i++) {
+		long begin = System.currentTimeMillis();
+		for (int i = 0; i < 10000; i++) {
 			long id = guidGenerator.generate();
 			System.out.println("id : " + id);
 		}
+		System.out.println("任务完成，耗时: " + (System.currentTimeMillis() - begin));
 //		while (true) {
 //			System.out.println("运行中.....");
 //			try {

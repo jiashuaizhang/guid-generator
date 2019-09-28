@@ -16,9 +16,9 @@ import lombok.extern.slf4j.Slf4j;
 @Data
 public class SnowFlakeConfig {
 	
-	private boolean zkWorkderIdEnabled;
+	private boolean zkWorkerIdEnabled;
 	private boolean zkLeaderSelect;
-	private String workderIdNode = "_workerId_";
+	private String workerIdNode = "_workerId_";
 	private String leaderSelectorNode = "_leaderSelector_";
 	private int port;
 	private CuratorFramework curator;
@@ -34,7 +34,7 @@ public class SnowFlakeConfig {
 	}
 	
 	public void init() {
-		if(this.zkWorkderIdEnabled) {
+		if(this.zkWorkerIdEnabled) {
 			zkWorkerId();
 		}
 	}
@@ -79,7 +79,7 @@ public class SnowFlakeConfig {
 	}
 	
 	private long nextWorkId(String type, long maxNum, long defaultValue) {
-		String nodePath = "/" + Const.ROOT + "/" + workderIdNode + "/" + type + "/" + type;
+		String nodePath = "/" + Const.ROOT + "/" + workerIdNode + "/" + type + "/" + type;
 		try {
 			String idWithPrefix = curator.create().creatingParentsIfNeeded()
 					.withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(nodePath);

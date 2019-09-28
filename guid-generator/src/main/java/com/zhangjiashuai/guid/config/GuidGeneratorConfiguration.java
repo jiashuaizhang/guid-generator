@@ -3,6 +3,7 @@ package com.zhangjiashuai.guid.config;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.leader.LeaderSelector;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -15,9 +16,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import com.zhangjiashuai.guid.consts.Const;
 import com.zhangjiashuai.guid.generator.RedisGuidGenerator;
 import com.zhangjiashuai.guid.generator.SnowFlakeGenerator;
 import com.zhangjiashuai.guid.generator.ZooKeeperGuidGenerator;
+import com.zhangjiashuai.guid.zookeeper.listener.LeaderListener;
 
 @Configuration
 public class GuidGeneratorConfiguration {
@@ -75,15 +78,32 @@ public class GuidGeneratorConfiguration {
 	@Bean(initMethod = "init")
 	@ConfigurationProperties(prefix = "guid.snowflake")
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeWorkerId snowFlakeZookeeperMachineId(@Autowired CuratorFramework curator) {
-    	return new SnowFlakeWorkerId(curator);
+    public SnowFlakeConfig snowFlakeConfig(@Autowired CuratorFramework curator) {
+    	return new SnowFlakeConfig(curator);
     }
+	
+	@Bean
+	@ConditionalOnMissingBean
+	@ConditionalOnBean(SnowFlakeConfig.class)
+	public LeaderSelector leaderSelector(@Autowired CuratorFramework curator, @Autowired SnowFlakeConfig snowFlakeConfig) {
+		if(!snowFlakeConfig.isZkLeaderSelect()) {
+			return null;
+		}
+		String node = snowFlakeConfig.getMachineId() + "-" + snowFlakeConfig.getDatacenterId();
+		String nodePath = "/" + Const.ROOT + "/" + snowFlakeConfig.getLeaderSelectorNode() + "/" + Const.SELECTORS_NODE + "/" + node;
+		LeaderListener leaderListener = new LeaderListener(snowFlakeConfig);
+		LeaderSelector leaderSelector = new LeaderSelector(curator, nodePath, leaderListener);
+		leaderListener.setLeaderSelector(leaderSelector);
+		leaderSelector.autoRequeue();
+		leaderSelector.start();
+		return leaderSelector;
+	}
     
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(prefix = "guid", name = "impl", havingValue = "snowflake", matchIfMissing = true)
-    public SnowFlakeGenerator snowFlakeGenerator(@Autowired(required = false) SnowFlakeWorkerId snowFlakeZookeeperMachineId) {
-    	return new SnowFlakeGenerator(snowFlakeZookeeperMachineId);
+    public SnowFlakeGenerator snowFlakeGenerator(@Autowired(required = false) SnowFlakeConfig snowFlakeZookeeperMachineId, @Autowired(required = false) LeaderSelector leaderSelector) {
+    	return new SnowFlakeGenerator(snowFlakeZookeeperMachineId, leaderSelector);
     }
     
 }

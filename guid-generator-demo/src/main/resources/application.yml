@@ -1,13 +1,16 @@
 guid:
-  impl: zookeeper # snowflake || zookeeper || redis
+  impl: snowflake # snowflake || zookeeper || redis
   zookeeper:
     connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
     sessionTimeOut: 3000
   snowflake:
-      zookeeperEnabled: false
-      node: _workerId_
       machineId: 1
       datacenterId: 31
+      zkLeaderSelect: true
+      leaderSelectorNode: _leaderSelector_
+      port: ${server.port}
+      zkWorkderIdEnabled: false
+      workderIdNode: _workerId_
 spring:
   application:
     name: guid-generator-demo
@@ -16,3 +19,5 @@ spring:
     sentinel:
       master: mymaster
       nodes: 10.191.129.56:26380
+server:
+  port: 8081

@@ -1,7 +1,5 @@
 package com.zhangjiashuai.guid.config;
 
-import java.nio.charset.StandardCharsets;
-
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.KeeperException.NodeExistsException;
@@ -16,30 +14,32 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Data
-public class SnowFlakeWorkerId {
+public class SnowFlakeConfig {
 	
-	private boolean enabled;
-	private String node;
-	private final String defaultNode = "_workerId_";
+	private boolean zkWorkderIdEnabled;
+	private boolean zkLeaderSelect;
+	private String workderIdNode = "_workerId_";
+	private String leaderSelectorNode = "_leaderSelector_";
+	private int port;
 	private CuratorFramework curator;
 	private long machineId = Const.DEFAULT_MACHINEID;
 	private long datacenterId = Const.DEFAULT_DATACENTER_ID;
 	
-	public SnowFlakeWorkerId() {
+	public SnowFlakeConfig() {
 		
 	}
 	
-	public SnowFlakeWorkerId(CuratorFramework curator) {
+	public SnowFlakeConfig(CuratorFramework curator) {
 		this.curator = curator;
 	}
 	
 	public void init() {
-		if(!this.enabled) {
-			return;
+		if(this.zkWorkderIdEnabled) {
+			zkWorkerId();
 		}
-		if(node == null) {
-			node = defaultNode;
-		}
+	}
+	
+	private void zkWorkerId() {
 		String machineIdNode = "_machineId_";
 		String dataCenterIdNode = "_dataCenterId_";
 		long machineId = nextWorkId(machineIdNode, SnowFlake.MAX_MACHINE_NUM, this.machineId);
@@ -60,18 +60,18 @@ public class SnowFlakeWorkerId {
 		this.datacenterId = dataCenterId;
 	}
 	
-	private boolean checkValid(long machineId, long dataCenterId) {
-		String key = machineId + "-" + dataCenterId;
+	private boolean checkValid(long machineId, long datacenterId) {
+		String key = machineId + "-" + datacenterId;
 		String nodePath = "/" + Const.ROOT + "/_existedWorker_/" + key;
 		try {
 			Stat stat = curator.checkExists().creatingParentsIfNeeded().forPath(nodePath);
 			if(stat == null) {
-				curator.create().storingStatIn(stat).withMode(CreateMode.EPHEMERAL).forPath(nodePath, defaultNode.getBytes(StandardCharsets.UTF_8));
-	                        log.info("machineId:[{}] and datacenterId:[{}] is valid,lets use them", machineId, dataCenterId);
-			        return true;
+				curator.create().withMode(CreateMode.EPHEMERAL).forPath(nodePath);
+	            log.info("machineId:[{}] and datacenterId:[{}] is valid,lets use them", machineId, datacenterId);
+			    return true;
 			}
 		} catch (NodeExistsException e) {
-			log.info("machineId:[{}] and datacenterId:[{}] is in use", machineId, dataCenterId);
+			log.info("machineId:[{}] and datacenterId:[{}] is in use", machineId, datacenterId);
 		} catch (Exception e) {
 			log.error("check worker valid error", e);
 		}
@@ -79,10 +79,10 @@ public class SnowFlakeWorkerId {
 	}
 	
 	private long nextWorkId(String type, long maxNum, long defaultValue) {
-		String nodePath = "/" + Const.ROOT + "/" + node + "/" + type + "/" + type;
+		String nodePath = "/" + Const.ROOT + "/" + workderIdNode + "/" + type + "/" + type;
 		try {
 			String idWithPrefix = curator.create().creatingParentsIfNeeded()
-					.withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(nodePath, defaultNode.getBytes(StandardCharsets.UTF_8));
+					.withMode(CreateMode.PERSISTENT_SEQUENTIAL).forPath(nodePath);
 			int beginIndex = nodePath.length();
 			String idStr = idWithPrefix.substring(beginIndex);
 			long id = Long.parseLong(idStr);

@@ -14,4 +14,7 @@ public class Const {
 	public static final long DEFAULT_DATACENTER_ID = idRandom.nextInt((int) SnowFlake.MAX_DATACENTER_NUM);
 	public static final long DEFAULT_MACHINEID = idRandom.nextInt((int) SnowFlake.MAX_MACHINE_NUM);
 	
+	public static final String SELECTORS_NODE = "_selectors_";
+	public static final String LEADER_NODE = "_leader_";
+	
 }

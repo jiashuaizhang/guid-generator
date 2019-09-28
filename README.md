@@ -124,10 +124,11 @@ server:
   port: 8081
 ```
 - 客户端使用
+
 1. 客户端将snowflake主节点的ip和端口自动写入`import com.zhangjiashuai.guid.client.leader.LeaderAddress`类，通过调用`LeaderAddress.getIp()`和
 `LeaderAddress.getPort()`即可获取主节点地址
 
-2.示例
+2. 示例
 ```java
 	@Test
 	public void testLeaderSelect() {
@@ -172,3 +173,14 @@ guid:
     # zookeeper会话超时时间，默认60000
     sessionTimeOut: 3000
 ```
+### 性能对比
+开发环境渣笔记本随便测了下，可以做参考
+- i7 6500U, 64位win10
+- zookeeper，redis均为本机部署
+- 相同的代码，循环生成10000个ID
+
+|生成方式|耗时(ms)
+|:----    |:---|
+|snowflake |467|
+|redis     |4793  |
+|zookeeper     |27536  |

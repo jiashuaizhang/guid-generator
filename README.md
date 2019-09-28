@@ -14,7 +14,7 @@
 
 **2. 注入使用**
 
-```
+```java
 	@Autowired
 	private GuidGenerator guidGenerator;
 	
@@ -58,14 +58,97 @@ guid:
     sessionTimeOut: 3000
   snowflake:
       # 是否开启zookeeper worker获取，默认false
-      zookeeperEnabled: true
+      zkWorkerIdEnabled: true
       # /guid根节点下存储workId的父节点,默认 _workerId_. 当zookeeperEnabled为true时生效
-      node: _workerId_
+      workerIdNode: _workerId_
       # 默认machineId，范围0~31.当zookeeperEnabled为false时生效
       machineId: 1
       # 默认datacenterId，范围0~31.当zookeeperEnabled为false时生效
       datacenterId: 31
 ```
+
+#### 1.1.1版本更新
+1)snowflake支持主从自动切换，并提供客户端监听主节点变换. 相同的一组machineId和datacenterId的节点，可以自动组成主从关系,只有主节点提供服务，从而保证ID的有序性和唯一性
+
+- 服务端配置
+```
+		<dependency>
+		    <groupId>com.zhangjiashuai</groupId>
+    		    <artifactId>guid-generator-spring-boot-starter</artifactId>
+    		    <version>1.1.1</version>
+		</dependency>
+```
+```
+guid:
+  impl: snowflake
+  zookeeper:
+    connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
+    sessionTimeOut: 3000
+  snowflake:
+      machineId: 1
+      datacenterId: 31
+      # 是否开启leader选举,用于主从自动切换，默认false. 相同machineId和datacenterId的一组节点会组成主从关系，所以使用时需要配置machineId和datacenterId
+      zkLeaderSelect: true
+      # leader选举相关节点在zookeeper /guid根节点下的父节点
+      leaderSelectorNode: _leaderSelector_
+      # 对外提供服务的端口号
+      port: ${server.port}
+      # 是否开启zookeeper worker自动获取，当zkLeaderSelect开启时，请关闭zkWorkerIdEnabled
+      zkWorkerIdEnabled: false
+      # worker获取相关节点在zookeeper /guid根节点下的父节点
+      workerIdNode: _workerId_
+server:
+  port: 8081
+```
+- 客户端配置
+```
+		<dependency>
+		    <groupId>com.zhangjiashuai</groupId>
+		    <artifactId>guid-generator-zookeeper-client-spring-boot-starter</artifactId>
+		    <version>1.1.1</version>
+		</dependency>
+```
+```
+guid:
+  zookeeper:
+    connectString: 127.0.0.1:2181,127.0.0.1:2182,127.0.0.1:2183
+    sessionTimeOut: 3000
+  snowflake:
+      machineId: 1
+      datacenterId: 31
+      # 是否开启leader选举,用于主从自动切换，默认false. 相同machineId和datacenterId的一组节点会组成主从关系，所以使用时需要配置machineId和datacenterId
+      zkLeaderSelect: true
+      # leader选举相关节点在zookeeper /guid根节点下的父节点
+      leaderSelectorNode: _leaderSelector_
+server:
+  port: 8081
+```
+- 客户端使用
+1. 客户端将snowflake主节点的ip和端口自动写入`import com.zhangjiashuai.guid.client.leader.LeaderAddress`类，通过调用`LeaderAddress.getIp()`和
+`LeaderAddress.getPort()`即可获取主节点地址
+
+2.示例
+```java
+	@Test
+	public void testLeaderSelect() {
+		for (int i = 0; i < 100; i++) {
+			String ip = LeaderAddress.getIp();
+			int port = LeaderAddress.getPort();
+			System.out.printf("leader ip:[%s],port:[%d]\n", ip, port);
+			String url = "http://" + ip + ":" + port + "/generate";
+			try {
+				long guid = restTemplate.getForObject(url, Long.class);
+				System.out.println("id : " + guid);
+				TimeUnit.SECONDS.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+```
+
 **2. redis**
 
 添加如下配置

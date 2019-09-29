@@ -121,8 +121,6 @@ guid:
       zkLeaderSelect: true
       # leader选举相关节点在zookeeper /guid根节点下的父节点
       leaderSelectorNode: _leaderSelector_
-server:
-  port: 8081
 ```
 - 客户端使用
 
